@@ -11,7 +11,7 @@ while True:
         break
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    gray = cv2.GaussianBlur(gray, (5,5), 0)
+    gray = cv2.GaussianBlur(gray, (5,5), 1)
 
     diff = cv2.absdiff(prev_gray, gray)
 
@@ -22,11 +22,11 @@ while True:
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     count = 0
-    for i in contours:
-        if cv2.contourArea(i) > 800:
-                    x, y, w, h = cv2.boundingRect(i)
-                    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                    count += 1
+    largest = max(contours, key = cv2.contourArea)
+    if cv2.contourArea(largest) > 1000:
+        x, y, w, h = cv2.boundingRect(largest)
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        count += 1
     print(count)
 
     cv2.imshow("rect", frame)
