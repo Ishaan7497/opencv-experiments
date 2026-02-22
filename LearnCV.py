@@ -3,6 +3,9 @@ cap = cv2.VideoCapture(0)
 
 LOWER_BALL = (20, 60, 60) #testing with tennis ball
 UPPER_BALL = (50, 255, 255)
+prev_y = None
+direction = None
+threshold = 5
 
 
 while True:
@@ -30,6 +33,21 @@ while True:
             else:
                 x,y,radius = int(x),int(y),int(radius)
                 cv2.circle(frame,(x,y),radius,(255,0),4)
+
+                if prev_y is not None:
+                    dy = y - prev_y
+                    if abs(dy) < threshold:
+                        direction = "STILL"
+                    elif (dy) < 0:
+                        direction = "UP" 
+                    else:
+                        direction = "DOWN"
+                   
+
+                    cv2.putText(frame,direction,(30,60),cv2.FONT_HERSHEY_COMPLEX,2,(255,0,255),3)
+                prev_y = y
+
+    
 
 
     cv2.imshow("rect", frame)
